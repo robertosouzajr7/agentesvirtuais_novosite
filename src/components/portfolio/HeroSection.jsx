@@ -33,7 +33,7 @@ export default function HeroSection({ isDark }) {
   }, [displayText, isDeleting, currentRole]);
 
   const scrollToAbout = () => {
-    document.getElementById("about")?.scrollIntoView({ 
+    document.getElementById("about")?.scrollIntoView({
       behavior: "smooth",
       block: "start"
     });
@@ -45,16 +45,16 @@ export default function HeroSection({ isDark }) {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          <motion.h1 
+          transition={{ duration: 0.8 }}>
+
+          <motion.h1
             className={`text-5xl md:text-7xl lg:text-8xl font-bold mb-6 ${
-              isDark ? "text-white" : "text-gray-900"
-            }`}
+            isDark ? "text-white" : "text-gray-900"}`
+            }
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
+            transition={{ duration: 0.8, delay: 0.2 }}>
+
             Transforme seu Negócio com{" "}
             <span className="bg-gradient-to-r from-blue-500 via-purple-500 to-blue-600 bg-clip-text text-transparent">
               IA
@@ -66,11 +66,11 @@ export default function HeroSection({ isDark }) {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="mb-8"
-        >
+          className="mb-8">
+
           <h2 className={`text-2xl md:text-4xl lg:text-5xl font-light mb-4 ${
-            isDark ? "text-gray-200" : "text-gray-700"
-          }`}>
+          isDark ? "text-gray-200" : "text-gray-700"}`
+          }>
             Criamos{" "}
             <span className="font-medium text-blue-500 min-w-[300px] md:min-w-[450px] inline-block text-left">
               {displayText}
@@ -78,8 +78,8 @@ export default function HeroSection({ isDark }) {
             </span>
           </h2>
           <p className={`text-lg md:text-xl max-w-3xl mx-auto leading-relaxed ${
-            isDark ? "text-gray-300" : "text-gray-600"
-          }`}>
+          isDark ? "text-gray-300" : "text-gray-600"}`
+          }>
             Automatizamos processos e criamos experiências incríveis com assistentes virtuais e integrações poderosas.
             Vamos inovar juntos.
           </p>
@@ -89,26 +89,26 @@ export default function HeroSection({ isDark }) {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
-          className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16"
-        >
-          <Button 
-            size="lg" 
+          className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
+
+          <Button
+            size="lg"
             className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 rounded-2xl backdrop-blur-xl border-0 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-blue-500/25"
-            onClick={() => document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })}
-          >
+            onClick={() => document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })}>
+
             <Bot className="w-5 h-5 mr-2" />
             Nossas Soluções
           </Button>
-          <Button 
-            variant="outline" 
-            size="lg"
-            className={`px-8 py-3 rounded-2xl backdrop-blur-xl transition-all duration-300 hover:scale-105 ${
-              isDark 
-                ? "border-white/20 text-gray-200 hover:bg-white/10 hover:text-white"
-                : "border-black/20 text-gray-900 hover:bg-black/5"
-            }`}
-             onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
-          >
+          <Button
+            variant="outline"
+            size="lg" className="bg-background text-slate-950 px-8 py-3 text-sm font-medium inline-flex items-center justify-center gap-2 whitespace-nowrap ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border hover:text-accent-foreground h-11 rounded-2xl backdrop-blur-xl transition-all duration-300 hover:scale-105 border-white/20 hover:bg-white/10"
+
+
+
+
+
+            onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}>
+
             <MessageSquare className="w-5 h-5 mr-2" />
             Fale Conosco
           </Button>
@@ -118,20 +118,20 @@ export default function HeroSection({ isDark }) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 0.8 }}
-          className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
-        >
+          className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
+
           <motion.button
             onClick={scrollToAbout}
             animate={{ y: [0, 10, 0] }}
             transition={{ duration: 2, repeat: Infinity }}
             className={`p-2 rounded-full backdrop-blur-xl ${
-              isDark ? "text-white/70 hover:text-white" : "text-gray-600 hover:text-gray-900"
-            }`}
-          >
+            isDark ? "text-white/70 hover:text-white" : "text-gray-600 hover:text-gray-900"}`
+            }>
+
             <ChevronDown className="w-6 h-6" />
           </motion.button>
         </motion.div>
       </div>
-    </section>
-  );
+    </section>);
+
 }

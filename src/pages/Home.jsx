@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import HeroSection from "../components/portfolio/HeroSection";
@@ -69,12 +68,10 @@ export default function Home() {
         />
       </div>
 
-      {/* Navigation */}
-      <Navigation activeSection={activeSection} isDark={isDark} />
-      
-      {/* Theme Toggle */}
+      {/* Navigation & Theme Toggle */}
+      <Navigation activeSection={activeSection} isDark={isDark} setIsDark={setIsDark} />
       <ThemeToggle isDark={isDark} setIsDark={setIsDark} />
-
+      
       {/* Sections */}
       <main>
         <HeroSection isDark={isDark} />

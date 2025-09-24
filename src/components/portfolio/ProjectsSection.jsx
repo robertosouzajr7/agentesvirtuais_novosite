@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight } from "lucide-react";
@@ -85,11 +86,61 @@ export default function ProjectsSection({ isDark }) {
                       : "bg-black/5 border border-black/10 hover:border-blue-500/50 hover:bg-black/10"
                   } hover:shadow-2xl hover:shadow-blue-500/10`}>
                     <div className="relative overflow-hidden">
-                      <img
-                        src={service.image}
-                        alt={service.title}
-                        className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
-                      />
+                      {service.id === 1 ? (
+                        // Mockup do WhatsApp no iPhone para o primeiro serviço (Chatbot)
+                        <div className="w-full h-64 bg-gradient-to-br from-gray-900 to-black flex items-center justify-center p-8">
+                          <div className="relative">
+                            {/* iPhone Frame */}
+                            <div className="w-48 h-auto bg-black rounded-[2.5rem] p-2 shadow-2xl">
+                              <div className="bg-white rounded-[2.2rem] overflow-hidden relative h-96">
+                                {/* Status Bar */}
+                                <div className="bg-[#25D366] h-20 flex items-end pb-3 px-4">
+                                  <div className="flex items-center w-full">
+                                    <div className="w-8 h-8 bg-white/20 rounded-full mr-3"></div>
+                                    <div>
+                                      <div className="text-white font-medium text-sm">Agentes Virtuais</div>
+                                      <div className="text-white/80 text-xs">online</div>
+                                    </div>
+                                  </div>
+                                </div>
+                                
+                                {/* Chat Messages */}
+                                <div className="bg-[#E5DDD5] h-full p-3 space-y-2 text-xs">
+                                  {/* Bot Message */}
+                                  <div className="flex justify-start">
+                                    <div className="bg-white rounded-lg p-2 max-w-32 shadow-sm">
+                                      <p className="text-gray-800">Olá! Como posso ajudar você hoje? 🤖</p>
+                                    </div>
+                                  </div>
+                                  
+                                  {/* User Message */}
+                                  <div className="flex justify-end">
+                                    <div className="bg-[#DCF8C6] rounded-lg p-2 max-w-32 shadow-sm">
+                                      <p className="text-gray-800">Quero saber sobre automação</p>
+                                    </div>
+                                  </div>
+                                  
+                                  {/* Bot Response */}
+                                  <div className="flex justify-start">
+                                    <div className="bg-white rounded-lg p-2 max-w-32 shadow-sm">
+                                      <p className="text-gray-800">Perfeito! Temos soluções com IA que podem transformar seu negócio ✨</p>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            {/* Glow Effect */}
+                            <div className="absolute inset-0 bg-blue-500/20 rounded-[2.5rem] blur-xl -z-10"></div>
+                          </div>
+                        </div>
+                      ) : (
+                        <img
+                          src={service.image}
+                          alt={service.title}
+                          className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
+                        />
+                      )}
                     </div>
                     <div className="p-6">
                       <h3 className={`text-xl font-bold mb-2 ${

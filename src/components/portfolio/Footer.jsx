@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Linkedin } from 'lucide-react';
@@ -30,7 +31,10 @@ export default function Footer({ isDark }) {
             <p className="mt-4 max-w-xs">
               Especialistas em IA e automação, construindo experiências digitais inteligentes e eficientes.
             </p>
-             <p className="mt-4">CNPJ: 28.254.073/0001-29</p>
+             <div className="mt-4 text-xs leading-relaxed">
+                <p>ROBERTO SANTOS DE SOUZA JUNIOR 04612794524</p>
+                <p>CNPJ: 28.254.073/0001-29</p>
+             </div>
           </div>
 
           {/* Links */}
@@ -56,7 +60,7 @@ export default function Footer({ isDark }) {
             </h3>
              <ul className="space-y-2 mb-4">
                 <li><a href="mailto:suporte@agentesvirtuais.com" className="hover:text-blue-500">suporte@agentesvirtuais.com</a></li>
-                <li><a href="tel:+557135990996" className="hover:text-blue-500">(71) 3599-0996</a></li>
+                <li>(71) 3599-0996 (WhatsApp)</li>
                 <li>Rua Vereador Zezéu Ribeiro, Boca da Mata, Salvador, Bahia</li>
              </ul>
             <div className="flex gap-4">

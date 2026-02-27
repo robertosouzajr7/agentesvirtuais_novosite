@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { gerarPdfPrompts } from '@/lib/generatePromptPdf';
+import { SendEmail } from '@/api/integrations';
 import {
   Download,
   FileText,
@@ -11,6 +12,11 @@ import {
   ImageIcon,
   Wand2,
   Zap,
+  User,
+  Mail,
+  Phone,
+  ArrowRight,
+  CheckCircle2,
 } from 'lucide-react';
 
 const CENARIOS = [
@@ -79,21 +85,78 @@ function CenarioCard({ item, index }) {
   );
 }
 
+function InputField({ icon: Icon, label, type = 'text', value, onChange, placeholder, error }) {
+  return (
+    <div className="flex flex-col gap-1">
+      <label className="text-white/60 text-xs font-medium pl-1">{label}</label>
+      <div className={`flex items-center gap-2.5 px-3.5 py-3 rounded-xl border bg-white/5 backdrop-blur-sm transition-colors ${
+        error ? 'border-red-500/60' : 'border-white/10 focus-within:border-purple-500/60'
+      }`}>
+        <Icon className="w-4 h-4 text-purple-400 flex-shrink-0" />
+        <input
+          type={type}
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder}
+          className="flex-1 bg-transparent text-white text-sm placeholder-white/20 outline-none"
+        />
+      </div>
+      {error && <p className="text-red-400 text-[10px] pl-1">{error}</p>}
+    </div>
+  );
+}
+
 export default function DownloadPage() {
-  const [downloading, setDownloading] = useState(false);
-  const [downloaded, setDownloaded] = useState(false);
+  const [step, setStep] = useState('form'); // 'form' | 'success'
+  const [submitting, setSubmitting] = useState(false);
   const [showCenarios, setShowCenarios] = useState(false);
 
-  async function handleDownload() {
-    if (downloading || downloaded) return;
-    setDownloading(true);
+  const [form, setForm] = useState({ nome: '', email: '', telefone: '' });
+  const [errors, setErrors] = useState({});
+
+  function validate() {
+    const errs = {};
+    if (!form.nome.trim()) errs.nome = 'Informe seu nome';
+    if (!form.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
+      errs.email = 'Informe um e-mail válido';
+    if (!form.telefone.trim() || form.telefone.replace(/\D/g, '').length < 10)
+      errs.telefone = 'Informe um telefone válido';
+    return errs;
+  }
+
+  function handlePhone(e) {
+    let v = e.target.value.replace(/\D/g, '').slice(0, 11);
+    if (v.length > 6) v = `(${v.slice(0,2)}) ${v.slice(2,7)}-${v.slice(7)}`;
+    else if (v.length > 2) v = `(${v.slice(0,2)}) ${v.slice(2)}`;
+    else if (v.length > 0) v = `(${v}`;
+    setForm((f) => ({ ...f, telefone: v }));
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    const errs = validate();
+    if (Object.keys(errs).length) { setErrors(errs); return; }
+    setErrors({});
+    setSubmitting(true);
     try {
-      await new Promise((r) => setTimeout(r, 400));
-      gerarPdfPrompts();
-      setDownloaded(true);
-      setTimeout(() => setDownloaded(false), 4000);
+      // Envia lead por e-mail
+      await SendEmail({
+        to: 'suporte@agentesvirtuais.com',
+        subject: '🎯 Novo Lead — Pack de Prompts IA',
+        body: `
+Novo lead captado na página de Download!\n
+Nome: ${form.nome}
+E-mail: ${form.email}
+Telefone: ${form.telefone}
+Data: ${new Date().toLocaleString('pt-BR')}
+        `.trim(),
+      });
+    } catch (_) {
+      // Mesmo se o e-mail falhar, libera o download
     } finally {
-      setDownloading(false);
+      setSubmitting(false);
+      setStep('success');
+      setTimeout(() => gerarPdfPrompts(), 300);
     }
   }
 
@@ -107,6 +170,7 @@ export default function DownloadPage() {
       </div>
 
       <div className="relative w-full max-w-sm mx-auto flex flex-col items-center gap-5">
+
         {/* Avatar / Marca */}
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
@@ -114,7 +178,6 @@ export default function DownloadPage() {
           transition={{ duration: 0.5, ease: 'backOut' }}
           className="flex flex-col items-center gap-3 pt-2"
         >
-          {/* Logo circle */}
           <div className="relative">
             <div className="w-20 h-20 rounded-full bg-gradient-to-br from-purple-500 via-violet-500 to-indigo-600 flex items-center justify-center shadow-2xl shadow-purple-500/40">
               <Sparkles className="w-9 h-9 text-white" />
@@ -123,8 +186,6 @@ export default function DownloadPage() {
               ✦
             </span>
           </div>
-
-          {/* Nome da marca */}
           <div className="text-center">
             <h1 className="text-white font-bold text-lg leading-tight tracking-wide">
               Agentes Virtuais
@@ -133,7 +194,7 @@ export default function DownloadPage() {
           </div>
         </motion.div>
 
-        {/* Título do recurso */}
+        {/* Título */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -153,7 +214,7 @@ export default function DownloadPage() {
           </p>
         </motion.div>
 
-        {/* Card principal de download */}
+        {/* Card principal — Form ou Sucesso */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -197,41 +258,102 @@ export default function DownloadPage() {
             ))}
           </div>
 
-          {/* Botão de Download */}
+          {/* Formulário ou Sucesso */}
           <div className="px-5 pb-5">
-            <button
-              onClick={handleDownload}
-              disabled={downloading}
-              className={`w-full flex items-center justify-center gap-2.5 py-4 rounded-2xl font-bold text-sm transition-all duration-300 relative overflow-hidden ${
-                downloaded
-                  ? 'bg-green-500 text-white shadow-lg shadow-green-500/30'
-                  : 'bg-gradient-to-r from-purple-500 via-violet-500 to-indigo-500 text-white shadow-xl shadow-purple-500/40 hover:shadow-purple-500/60 hover:scale-[1.02] active:scale-[0.98]'
-              }`}
-            >
-              {downloading ? (
-                <>
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                    className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full"
+            <AnimatePresence mode="wait">
+              {step === 'form' ? (
+                <motion.form
+                  key="form"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onSubmit={handleSubmit}
+                  className="flex flex-col gap-3"
+                >
+                  <p className="text-white/50 text-xs text-center mb-1">
+                    Preencha para liberar o download gratuito
+                  </p>
+
+                  <InputField
+                    icon={User}
+                    label="Nome completo"
+                    value={form.nome}
+                    onChange={(e) => setForm((f) => ({ ...f, nome: e.target.value }))}
+                    placeholder="Seu nome"
+                    error={errors.nome}
                   />
-                  <span>Gerando PDF...</span>
-                </>
-              ) : downloaded ? (
-                <>
-                  <span className="text-lg">✓</span>
-                  <span>Download concluído!</span>
-                </>
+                  <InputField
+                    icon={Mail}
+                    label="E-mail"
+                    type="email"
+                    value={form.email}
+                    onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+                    placeholder="seu@email.com"
+                    error={errors.email}
+                  />
+                  <InputField
+                    icon={Phone}
+                    label="WhatsApp / Telefone"
+                    type="tel"
+                    value={form.telefone}
+                    onChange={handlePhone}
+                    placeholder="(00) 00000-0000"
+                    error={errors.telefone}
+                  />
+
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="mt-1 w-full flex items-center justify-center gap-2.5 py-4 rounded-2xl font-bold text-sm bg-gradient-to-r from-purple-500 via-violet-500 to-indigo-500 text-white shadow-xl shadow-purple-500/40 hover:shadow-purple-500/60 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 disabled:opacity-70 disabled:scale-100"
+                  >
+                    {submitting ? (
+                      <>
+                        <motion.div
+                          animate={{ rotate: 360 }}
+                          transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                          className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full"
+                        />
+                        <span>Processando...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Download className="w-5 h-5" />
+                        <span>Quero meu Pack Grátis</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </>
+                    )}
+                  </button>
+
+                  <p className="text-white/20 text-[10px] text-center">
+                    Seus dados estão seguros. Não enviamos spam.
+                  </p>
+                </motion.form>
               ) : (
-                <>
-                  <Download className="w-5 h-5" />
-                  <span>Baixar Pack Gratuitamente</span>
-                </>
+                <motion.div
+                  key="success"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="flex flex-col items-center gap-3 py-2"
+                >
+                  <div className="w-14 h-14 rounded-full bg-green-500/20 border border-green-500/40 flex items-center justify-center">
+                    <CheckCircle2 className="w-7 h-7 text-green-400" />
+                  </div>
+                  <div className="text-center">
+                    <p className="text-white font-bold text-base">Download iniciado!</p>
+                    <p className="text-white/50 text-xs mt-1">
+                      Seu PDF está sendo gerado. Obrigado, {form.nome.split(' ')[0]}!
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => gerarPdfPrompts()}
+                    className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl font-bold text-sm bg-green-500 text-white hover:bg-green-400 transition-colors"
+                  >
+                    <Download className="w-4 h-4" />
+                    Baixar novamente
+                  </button>
+                </motion.div>
               )}
-            </button>
-            <p className="text-white/30 text-[10px] text-center mt-2">
-              PDF gerado instantaneamente • Sem e-mail necessário
-            </p>
+            </AnimatePresence>
           </div>
         </motion.div>
 
@@ -302,7 +424,6 @@ export default function DownloadPage() {
           Visitar agentesvirtuais.com.br
         </motion.a>
 
-        {/* Rodapé */}
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

@@ -48,6 +48,7 @@ function PagesContent() {
                 <Route path="/ServicoDetalhe" element={<ServicoDetalhe />} />
 
                 <Route path="/Download" element={<Download />} />
+                <Route path="/download" element={<Download />} />
 
             </Routes>
         </Layout>

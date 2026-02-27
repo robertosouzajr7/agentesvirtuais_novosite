@@ -4,14 +4,18 @@ import Home from "./Home";
 
 import ServicoDetalhe from "./ServicoDetalhe";
 
+import Download from "./Download";
+
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 
 const PAGES = {
-    
+
     Home: Home,
-    
+
     ServicoDetalhe: ServicoDetalhe,
-    
+
+    Download: Download,
+
 }
 
 function _getCurrentPage(url) {
@@ -42,7 +46,9 @@ function PagesContent() {
                 <Route path="/Home" element={<Home />} />
                 
                 <Route path="/ServicoDetalhe" element={<ServicoDetalhe />} />
-                
+
+                <Route path="/Download" element={<Download />} />
+
             </Routes>
         </Layout>
     );

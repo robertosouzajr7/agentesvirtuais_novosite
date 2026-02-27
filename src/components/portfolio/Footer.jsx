@@ -1,9 +1,11 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Linkedin } from "lucide-react";
+import { Linkedin, Download } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import Logo from "./Logo";
 
 export default function Footer({ isDark }) {
+  const navigate = useNavigate();
   const socialLinks = [{ icon: Linkedin, href: "#", label: "LinkedIn" }];
 
   const navLinks = [
@@ -65,6 +67,19 @@ export default function Footer({ isDark }) {
                   </button>
                 </li>
               ))}
+              <li>
+                <button
+                  onClick={() => navigate("/Download")}
+                  className={`flex items-center gap-1.5 font-medium transition-colors ${
+                    isDark
+                      ? "text-purple-400 hover:text-purple-300"
+                      : "text-purple-600 hover:text-purple-500"
+                  }`}
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  Downloads Gratuitos
+                </button>
+              </li>
             </ul>
           </div>
 
